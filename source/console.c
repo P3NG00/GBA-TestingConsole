@@ -18,10 +18,10 @@
 // }
 
 enum VCLine {
-    LINE_UP     = 65,
-    LINE_DOWN  	= 66,
-    LINE_RIGHT 	= 67,
-    LINE_LEFT  	= 68,
+    LINE_UP     = (u8)'A',
+    LINE_DOWN  	= (u8)'B',
+    LINE_RIGHT 	= (u8)'C',
+    LINE_LEFT  	= (u8)'D',
 };
 
 void vc_line(enum VCLine direction, u8 n, const char *text) {
