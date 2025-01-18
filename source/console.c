@@ -4,7 +4,6 @@
 #include <gba_interrupt.h>
 #include <gba_video.h>
 #include <gba_systemcalls.h>
-
 #include <stdio.h>
 
 // TODO use
@@ -17,6 +16,12 @@
 //         return false;
 //     }
 // }
+
+void vc_print(u8 x, u8 y, char text[]) {
+	// ansi escape sequence to set print co-ordinates
+	// /x1b[line;columnH
+	iprintf("\x1b[%d;%dH%s", x, y, text);
+}
 
 int main(void) {
 	// the vblank interrupt must be enabled for VBlankIntrWait() to work
@@ -33,12 +38,10 @@ int main(void) {
 	SetMode( MODE_0 | BG0_ON );
 
 	// ansi escape sequence to clear screen and home cursor
-	// /x1b[line;columnH
+	// /x1b[line;columnH (TODO this seems wrong)
 	iprintf("\x1b[2J");
 
-	// ansi escape sequence to set print co-ordinates
-	// /x1b[line;columnH
-	iprintf("\x1b[10;10HHello World!");
+	vc_print(10, 10, "Hello World!");
 
 	// ansi escape sequence to move cursor up
 	// /x1b[linesA
