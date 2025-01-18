@@ -17,22 +17,19 @@
 //     }
 // }
 
-void vc_print(u8 x, u8 y, const char *text) {
-    // ansi escape sequence to set print co-ordinates
-    // /x1b[line;columnH
-    iprintf("\x1b[%d;%dH%s", x, y, text);
-}
-
 enum VCLine {
-    LINE_UP     = 0,
-    LINE_DOWN  	= 1,
-    LINE_RIGHT 	= 2,
-    LINE_LEFT  	= 3,
+    LINE_UP     = 65,
+    LINE_DOWN  	= 66,
+    LINE_RIGHT 	= 67,
+    LINE_LEFT  	= 68,
 };
 
 void vc_line(enum VCLine direction, u8 n, const char *text) {
-    char controlChar = 'A' + (char)direction;
-    iprintf("\x1b[%d%c%s", n, controlChar, text);
+    iprintf("\x1b[%d%c%s", n, direction, text);
+}
+
+void vc_pos(u8 x, u8 y, const char *text) {
+    iprintf("\x1b[%d;%dH%s", x, y, text);
 }
 
 int main(void) {
@@ -55,7 +52,7 @@ int main(void) {
     // /x1b[line;columnH (#TODO this seems wrong)
     iprintf("\x1b[2J");
 
-    vc_print(10, 10, "Hello World!");
+    vc_pos(10, 10, "Hello World!");
     vc_line(LINE_UP, 10, "Line 0");
     vc_line(LINE_LEFT, 28, "Column 0");
     vc_line(LINE_DOWN, 19, "Line 19");
