@@ -1,10 +1,22 @@
 
 #include <gba_console.h>
-#include <gba_video.h>
+// #include <gba_input.h>
 #include <gba_interrupt.h>
+#include <gba_video.h>
 #include <gba_systemcalls.h>
 
 #include <stdio.h>
+
+// TODO use
+// bool button_held(u16 button) {
+//     /* and the button register with the button constant we want */
+//     u16 pressed = REG_KEYINPUT & button;
+//     if (pressed == 0) {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
 
 int main(void) {
 	// the vblank interrupt must be enabled for VBlankIntrWait() to work
@@ -13,7 +25,12 @@ int main(void) {
 	irqInit();
 	irqEnable(IRQ_VBLANK);
 
-	consoleDemoInit();
+	consoleInit(0, 4, 0, NULL, 0, 15);
+
+	BG_COLORS[0] = RGB8(0b00010000, 0b00010000, 0b00010000);  // background color
+	BG_COLORS[241] = RGB5(0b11111, 0b11111, 0b11111);  // font color
+
+	SetMode( MODE_0 | BG0_ON );
 
 	// ansi escape sequence to clear screen and home cursor
 	// /x1b[line;columnH
