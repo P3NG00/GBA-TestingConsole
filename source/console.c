@@ -32,6 +32,10 @@ void vc_pos(u8 x, u8 y, const char *text) {
     iprintf("\x1b[%d;%dH%s", x, y, text);
 }
 
+void vc_clear() {
+    iprintf("\x1b[2J");
+}
+
 int main(void) {
     // the vblank interrupt must be enabled for VBlankIntrWait() to work
     // since the default dispatcher handles the bios flags no vblank handler
@@ -48,10 +52,7 @@ int main(void) {
 
     SetMode( MODE_0 | BG0_ON );
 
-    // ansi escape sequence to clear screen and home cursor
-    // /x1b[line;columnH (#TODO this seems wrong)
-    iprintf("\x1b[2J");
-
+    vc_clear();
     vc_pos(10, 10, "Hello World!");
     vc_line(LINE_UP, 10, "Line 0");
     vc_line(LINE_LEFT, 28, "Column 0");
