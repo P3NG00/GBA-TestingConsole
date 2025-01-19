@@ -24,22 +24,25 @@ enum VCLine {
     LINE_LEFT  	= (u8)'D',
 };
 
-void vc_line(enum VCLine direction, u8 n, const char *text) {
-    iprintf("\x1b[%d%c%s", n, direction, text);
+void vc_line(enum VCLine direction, u8 n) {
+    iprintf("\x1b[%d%c", n, direction);
 }
 
-void vc_pos(u8 x, u8 y, const char *text) {
-    iprintf("\x1b[%d;%dH%s", x, y, text);
+void vc_pos(u8 x, u8 y) {
+    iprintf("\x1b[%d;%dH", x, y);
 }
 
 void vc_clear() {
     iprintf("\x1b[2J");
 }
 
+void vc_print(const char *text) {
+    iprintf(text);
+}
+
 int main(void) {
-    // the vblank interrupt must be enabled for VBlankIntrWait() to work
-    // since the default dispatcher handles the bios flags no vblank handler
-    // is required
+    /* the vblank interrupt must be enabled for VBlankIntrWait() to work since
+     * the default dispatcher handles the bios flags no vblank handler is required */
     irqInit();
     irqEnable(IRQ_VBLANK);
 
@@ -53,11 +56,13 @@ int main(void) {
     SetMode( MODE_0 | BG0_ON );
 
     vc_clear();
-    vc_pos(10, 10, "Hello World!");
-    vc_line(LINE_UP, 10, "Line 0");
-    vc_line(LINE_LEFT, 28, "Column 0");
-    vc_line(LINE_DOWN, 19, "Line 19");
-    vc_line(LINE_RIGHT, 5, "Column 20");
+
+    // TODO remove testing
+    vc_print("Hello, World!");
+    vc_clear();
+    vc_print("\ntesting :)");
+    vc_pos(0, 0);
+    vc_print("whoah");
 
     while (1) {
         VBlankIntrWait();
