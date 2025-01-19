@@ -62,11 +62,13 @@ int main(void) {
     vc_clear();
 
     // TODO remove testing
-    vc_print("Hello, World!");
-    vc_clear();
-    vc_print("\ntesting :)");
-    vc_pos(0, 0);
-    vc_print("whoah");
+    vc_print("Hello, World!");  // should be cleared by clear below
+    vc_clear();                 // should clear text above
+    vc_print("\ntesting");      // should print 'testing' on second line
+    vc_pos(0, 0);               // sets cursor to 0, 0
+    vc_print("whoah");          // should print 'whoah' on first line
+    vc_pos(1, 3);               // sets cursor to 1, 3
+    vc_print("yippee");         // should print 'yippee' on fourth line, 1 column from left
 
     while (1) {
         VBlankIntrWait();
