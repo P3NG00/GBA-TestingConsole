@@ -13,35 +13,22 @@
 #define keyHeld(key) _keysHeld & key
 #define keyDown(key) _keysDown & key
 
+#define vc_line(direction, n) iprintf(CTRL"%d%c", n, direction)
+#define vc_pos(x, y)          iprintf(CTRL"%d;%dH", y, x)
+#define vc_clear()            iprintf(CTRL"2J")
+#define vc_print(text)        iprintf(text);
+#define vc_printc(c)          iprintf("%c", c)
 
-enum VCLine {
-    LINE_UP     = (u8)'A',
-    LINE_DOWN  	= (u8)'B',
-    LINE_RIGHT 	= (u8)'C',
-    LINE_LEFT  	= (u8)'D',
-};
-
-
-void vc_line(enum VCLine direction, u8 n) {
-    iprintf(CTRL"%d%c", n, direction);
-}
-void vc_pos(u8 x, u8 y) {
-    iprintf(CTRL"%d;%dH", y, x);
-}
-void vc_clear() {
-    iprintf(CTRL"2J");
-}
-void vc_print(const char *text) {
-    iprintf(text);
-}
-void vc_printc(char c) {
-    iprintf("%c", c);
-}
+#define VC_LINE_UP    = 'A',
+#define VC_LINE_DOWN  = 'B',
+#define VC_LINE_RIGHT = 'C',
+#define VC_LINE_LEFT  = 'D',
 
 
 u16 _keysHeld, _keysDown;
 
-char getCharacterFromHeld() {
+
+char charFromInput() {
 
     u8 c = INVALID_CHAR;
 
@@ -87,7 +74,7 @@ void _handleInput_typing() {
 
     // check typing key
     if (keyDown(KEY_A)) {
-        char c = getCharacterFromHeld();
+        char c = charFromInput();
         vc_printc(c);
     } else if (keyDown(KEY_B)) {
         // TODO backspace
