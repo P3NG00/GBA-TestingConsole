@@ -19,6 +19,9 @@
 // }
 
 
+#define CTRL "\x1b["
+
+
 enum VCLine {
     LINE_UP     = (u8)'A',
     LINE_DOWN  	= (u8)'B',
@@ -28,17 +31,14 @@ enum VCLine {
 
 
 void vc_line(enum VCLine direction, u8 n) {
-    iprintf("\x1b[%d%c", n, direction);
+    iprintf(CTRL"%d%c", n, direction);
 }
-
 void vc_pos(u8 x, u8 y) {
-    iprintf("\x1b[%d;%dH", x, y);
+    iprintf(CTRL"%d;%dH", y, x);
 }
-
 void vc_clear() {
-    iprintf("\x1b[2J");
+    iprintf(CTRL"2J");
 }
-
 void vc_print(const char *text) {
     iprintf(text);
 }
