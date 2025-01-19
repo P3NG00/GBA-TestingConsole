@@ -83,6 +83,17 @@ char getCharacterFromHeld() {
     return '.';  // TODO change to space
 }
 
+void _handleInput_typing() {
+
+    // check typing key
+    if (keyDown(KEY_A)) {
+        char c = getCharacterFromHeld();
+        vc_printc(c);
+    } else if (keyDown(KEY_B)) {
+        // TODO backspace
+    }
+}
+
 void handleInput() {
 
     scanKeys();
@@ -95,13 +106,7 @@ void handleInput() {
         return;
     }
 
-    // check typing key
-    if (keyDown(KEY_A)) {
-        char c = getCharacterFromHeld();
-        vc_printc(c);
-    } else if (keyDown(KEY_B)) {
-        // TODO backspace
-    }
+    _handleInput_typing();
 }
 
 
