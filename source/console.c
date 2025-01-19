@@ -8,6 +8,10 @@
 
 
 #define CTRL "\x1b["
+#define INVALID_CHAR (u8)-1
+
+#define keyHeld(key) _keysHeld & key
+#define keyDown(key) _keysDown & key
 
 
 enum VCLine {
@@ -35,69 +39,74 @@ void vc_printc(char c) {
 }
 
 
-char getCharacterFromHeld(u16 *_keysHeld) {
-    // initialize to checkable variable
-    u8 c = (u8)-1;
+u16 _keysHeld, _keysDown;
 
-    if (*_keysHeld & KEY_RIGHT) {
+char getCharacterFromHeld() {
+
+    u8 c = INVALID_CHAR;
+
+    if (keyHeld(KEY_RIGHT)) {
         c = 2;    // 2
-        if (*_keysHeld & KEY_UP) {
+        if (keyHeld(KEY_UP)) {
             c--;  // 1
-        } else if (*_keysHeld & KEY_DOWN) {
+        } else if (keyHeld(KEY_DOWN)) {
             c++;  // 3
         }
-    } else if (*_keysHeld & KEY_LEFT) {
+    } else if (keyHeld(KEY_LEFT)) {
         c = 6;    // 6
-        if (*_keysHeld & KEY_UP) {
+        if (keyHeld(KEY_UP)) {
             c++;  // 7
-        } else if (*_keysHeld & KEY_DOWN) {
+        } else if (keyHeld(KEY_DOWN)) {
             c--;  // 5
         }
-    } else if (*_keysHeld & KEY_UP) {
+    } else if (keyHeld(KEY_UP)) {
         c = 0;    // 0
-    } else if (*_keysHeld & KEY_DOWN) {
+    } else if (keyHeld(KEY_DOWN)) {
         c = 4;    // 4
     }
 
     // check if valid letter
-    if (c != (u8)-1) {
+    if (c != INVALID_CHAR) {
         // check modifiers for other letters
-        if (*_keysHeld & KEY_L) {
+        if (keyHeld(KEY_L)) {
             c += 8;
-        } else if (*_keysHeld & KEY_R) {
+        }
+        if (keyHeld(KEY_R)) {
             c += 16;
         }
-        // TODO implement currently unreachable 'y' and 'z' as current implementation only reaches 24 letters.
         // TODO uppercase for a-z
-
-        return c + 'a';
+        if (c < 26) {
+            return c + 'a';
+        }
     }
 
-    return '-';  // TODO change to space
+    return '.';  // TODO change to space
 }
 
 void handleInput() {
+
     scanKeys();
-    u16 _keysHeld = keysHeld();
-    u16 _keysDown = keysDown();
+    _keysHeld = keysHeld();
+    _keysDown = keysDown();
 
     // start clears screen and returns
-    if (_keysDown & KEY_START) {
+    if (keyDown(KEY_START)) {
         vc_clear();
         return;
     }
 
     // check typing key
-    if (_keysDown & KEY_A) {
-        char c = getCharacterFromHeld(&_keysHeld);
+    if (keyDown(KEY_A)) {
+        char c = getCharacterFromHeld();
         vc_printc(c);
-    } else if (_keysDown & KEY_B) {
+    } else if (keyDown(KEY_B)) {
         // TODO backspace
     }
 }
 
 
 int main() {
+
     /* the vblank interrupt must be enabled for VBlankIntrWait() to work since
      * the default dispatcher handles the bios flags no vblank handler is required */
     irqInit();
@@ -115,6 +124,7 @@ int main() {
     vc_print("\nwork in progress\n\nuse A to confirm letter\nuse Start to clear screen\nuse DPAD+LR combinations for different letters\n\n");  // TODO edit
 
     while (1) {
+
         handleInput();
 
         VBlankIntrWait();
