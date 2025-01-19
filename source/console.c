@@ -6,6 +6,7 @@
 #include <gba_systemcalls.h>
 #include <stdio.h>
 
+
 // TODO use
 // bool button_held(u16 button) {
 //     /* and the button register with the button constant we want */
@@ -17,12 +18,14 @@
 //     }
 // }
 
+
 enum VCLine {
     LINE_UP     = (u8)'A',
     LINE_DOWN  	= (u8)'B',
     LINE_RIGHT 	= (u8)'C',
     LINE_LEFT  	= (u8)'D',
 };
+
 
 void vc_line(enum VCLine direction, u8 n) {
     iprintf("\x1b[%d%c", n, direction);
@@ -39,6 +42,7 @@ void vc_clear() {
 void vc_print(const char *text) {
     iprintf(text);
 }
+
 
 int main(void) {
     /* the vblank interrupt must be enabled for VBlankIntrWait() to work since
